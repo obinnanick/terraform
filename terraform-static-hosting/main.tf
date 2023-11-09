@@ -23,7 +23,9 @@ resource "aws_s3_bucket_acl" "my-bucket_acl" {
 }
 resource "aws_s3_bucket_policy" "my-bucket_policy" {
   bucket = aws_s3_bucket.my-bucket.id
-  policy = jsondecode({
+
+  policy = jsonencode (
+    {
     "Version": "2012-10-17",
     "Statement": [
         {
@@ -34,7 +36,8 @@ resource "aws_s3_bucket_policy" "my-bucket_policy" {
             "Resource": "arn:aws:s3::: ${var.bucket_name}/*"
         }
     ]
-})
+}
+)
 }
 resource "aws_s3_bucket_website_configuration" "hosting_aws_website_configuration" {
   bucket = aws_s3_bucket.my-bucket.id
@@ -45,11 +48,11 @@ resource "aws_s3_bucket_website_configuration" "hosting_aws_website_configuratio
 resource "aws_s3_object" "hosting_bucket_files" {
   bucket = aws_s3_bucket.my-bucket.id
 
-  for_each = module-template_files.files
+  for_each = module.template_files.files
   key = each.key
   content_type = each.value.content_type
 
-  source = each.value.source.path
+  source = each.value.source_path
   content = each.value.content
 
   etag = each.value.digests.md5

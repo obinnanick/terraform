@@ -14,39 +14,38 @@ module "template_files" {
   
   base_dir ="${path.module}/web"
 }
-resource "aws_s3_bucket" "my-bucket" {
-    bucket = var.bucket_name
+resource "aws_s3_bucket" "hosting_bucket" {
+    bucket = "web-hosting-static942"
 }
-resource "aws_s3_bucket_acl" "my-bucket_acl" {
-  bucket = aws_s3_bucket.my-bucket.id
-  acl = "public-read"
+resource "aws_s3_bucket_acl" "hosting_bucket_acl" {
+  bucket = "web-hosting-static942"
+  acl    = "public-read"
 }
-resource "aws_s3_bucket_policy" "my-bucket_policy" {
-  bucket = aws_s3_bucket.my-bucket.id
 
-  policy = jsonencode (
-    {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "PublicReadGetObject",
-            "Effect": "Allow",
-            "Principal": "*",
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3::: ${var.bucket_name}/*"
-        }
-    ]
+resource "aws_s3_bucket_policy" "hosting_bucket_policy" {
+  bucket = aws_s3_bucket_acl.hosting_bucket_acl.bucket
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = "*",
+        Action = "s3:GetObject",
+        Resource = "${aws_s3_bucket_acl.hosting_bucket_acl.bucket}/*",
+      },
+    ],
+  })
 }
-)
-}
-resource "aws_s3_bucket_website_configuration" "hosting_aws_website_configuration" {
-  bucket = aws_s3_bucket.my-bucket.id
+
+resource "aws_s3_bucket_website_configuration" "hosting_bucket_website_configuration" {
+  bucket = aws_s3_bucket.hosting_bucket.id
   index_document {
     suffix ="index.html"
   }
 }
 resource "aws_s3_object" "hosting_bucket_files" {
-  bucket = aws_s3_bucket.my-bucket.id
+  bucket = aws_s3_bucket.hosting_bucket.id
 
   for_each = module.template_files.files
   key = each.key

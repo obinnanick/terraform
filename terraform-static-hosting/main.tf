@@ -19,23 +19,26 @@ resource "aws_s3_bucket" "hosting_bucket" {
 }
 resource "aws_s3_bucket_acl" "hosting_bucket_acl" {
   bucket = "web-hosting-static942"
-  acl    = "public-read"
+  acl    = "public-read" 
+  
 }
 
 resource "aws_s3_bucket_policy" "hosting_bucket_policy" {
-  bucket = aws_s3_bucket_acl.hosting_bucket_acl.bucket
+  bucket = aws_s3_bucket.hosting_bucket.bucket
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
+  policy = <<EOF
+  {
+    "Version": "2012-10-17",
+    "Statement": [
       {
-        Effect = "Allow",
-        Principal = "*",
-        Action = "s3:GetObject",
-        Resource = "${aws_s3_bucket_acl.hosting_bucket_acl.bucket}/*",
-      },
-    ],
-  })
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": "${aws_s3_bucket.hosting_bucket.arn}/*"
+      }
+    ]
+  }
+  EOF
 }
 
 resource "aws_s3_bucket_website_configuration" "hosting_bucket_website_configuration" {

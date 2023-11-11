@@ -3,6 +3,6 @@ variable "aws_region" {
   type = string
 }
 variable "bucket_name" {
-  description = "AWS Bucket"
+  description = "Name of the Bucket"
   type = string
 }

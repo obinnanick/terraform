@@ -1,42 +1,22 @@
-name: CI/CD to AWS S3
+name: deploy static website to AWS-S3
 
 on:
   push:
-    branches:
-      - main
-
 jobs:
-  build:
-    name: deploy to S3
-    runs-on: ${{matrix.os}}
-    strategy:
-      matrix:
-        os: [windows-latest, macOS-latest]
+  deploy:
+    runs-on: macOS-latest
 
     steps:
-      - name: checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
-
-      - name: Update npm
-        run: npm install -g npm@latest
-
-      - name: install dependencies
-        run: npm install
-
-      - name: Build the project
-        run: npm run build
-
-      - name: Upload to S3
+      - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
-          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: upload artifact
-        run: aws s3 cp ./terraform/terraform-static-hosting/web s3://web-hosting-static942/ --recursive
+      - name: Deploy to AWS S3
+        run: |
+          aws s3 sync . s3://web-hosting-static942 --delete

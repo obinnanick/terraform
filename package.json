@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "automating using terraform",
   "main": "index.js",
-  
   "scripts": {
-    "build": "your-build-command-here"
+    "build": "webpack --config webpack.config.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  }
 }

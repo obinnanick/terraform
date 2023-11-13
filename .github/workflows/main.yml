@@ -19,4 +19,4 @@ jobs:
 
       - name: Deploy to AWS S3
         run: |
-          aws s3 sync . s3://web-hosting-static942 --delete
+          aws s3 sync . web-hosting-static942 --delete

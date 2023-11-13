@@ -1,0 +1,38 @@
+name: CI/CD to AWS S3 
+on: 
+push:
+-main
+pull_request:
+-main
+
+jobs:
+build:
+name: deploy to S3
+runs-on: ${{matrix.os}}
+strategy:
+matrix: 
+os: [ubuntu-latest, windows-latest, macOS-latest]
+
+steps:
+-name: checkout repo
+uses: actions/checkout@v2
+
+-name: set up Node.js
+uses: actions/setup-node@v2
+
+-name: installs dependencies
+run: npm install
+
+-name: Build the project and test
+run: npm run build
+run: npm  test
+
+-name: Upload to S3
+uses: aws-actions/configure-aws-credentials@v1
+with:
+aws_access_key_id: ${{secrets.AWS_ACCESS_KEY}}
+aws_secret_access_key_id: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+aws_region: us-east-1
+
+-name: upload artifact
+run: aws s3 cp ./path/to/artifacts s3://web-hosting-static942/ --recursive 

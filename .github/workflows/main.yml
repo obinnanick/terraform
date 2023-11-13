@@ -2,8 +2,6 @@ name: CI/CD to AWS S3
 on: 
 push:
 -main
-pull_request:
--main
 
 jobs:
 build:
@@ -35,4 +33,4 @@ aws_secret_access_key_id: ${{secrets.AWS_SECRET_ACCESS_KEY}}
 aws_region: us-east-1
 
 -name: upload artifact
-run: aws s3 cp ./path/to/artifacts s3://web-hosting-static942/ --recursive 
+run: aws s3 cp ./terraform-static-hosting/web s3://web-hosting-static942/ --recursive 

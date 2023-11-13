@@ -2,7 +2,6 @@ name: CI/CD to AWS S3
 on: 
 push:
 -main
-
 jobs:
 build:
 name: deploy to S3

@@ -20,7 +20,7 @@ jobs:
       - name: set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "15"
 
       - name: Update npm
         run: npm install -g npm@latest

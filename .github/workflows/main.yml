@@ -20,11 +20,10 @@ jobs:
       - name: set up Node.js
         uses: actions/setup-node@v14
         with:
-            node-version: '14'
+          node-version: "14"
 
       - name: install dependencies
-        run:
-            npm install
+        run: npm install
 
       - name: Build the project and test
         run: |

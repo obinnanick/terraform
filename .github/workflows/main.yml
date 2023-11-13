@@ -1,0 +1,39 @@
+name: CI/CD to AWS S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: deploy to S3
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: set up Node.js
+        uses: actions/setup-node@v2
+
+      - name: install dependencies
+        run: npm install
+
+      - name: Build the project and test
+        run: |
+          npm run build
+          npm test
+
+      - name: Upload to S3
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: us-east-1
+
+      - name: upload artifact
+        run: aws s3 cp ./terraform/terraform-static-hosting/web s3://web-hosting-static942/ --recursive

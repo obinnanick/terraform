@@ -22,10 +22,9 @@ jobs:
         with:
           node-version: "14"
 
-    - name: install dependencies
+      - name: install dependencies
         working-directory: ./terraform/terraform-static-hosting
         run: npm install
-        
 
       - name: Build the project and test
         run: |
